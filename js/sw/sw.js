@@ -1,22 +1,25 @@
-var staticCacheName = 'allen-restaurant-v5';
+var staticCacheName = 'allen-restaurant-v3';
+
 console.log('archivo SW');
+
 self.addEventListener('install', function(event) {
     // TODO: cache /skeleton rather than the root page
     console.log('installing sw');
     event.waitUntil(
         caches.open(staticCacheName).then(function(cache) {
             return cache.addAll([
+                '/',
                 '/js/dbhelper.js',
                 '/js/main.js',
                 '/js/restaurant_info.js',
-                '/css/styles.css',
-                '/offline.html'
+                '/css/styles.css'
             ]);
         }).catch(function(reason) { 'Error in install event: ' + console.log(reason); })
     );
 });
 
 self.addEventListener('activate', function(event) {
+    console.log('evento activate');
     event.waitUntil(
         caches.keys().then(function(cacheNames) {
             return Promise.all(
@@ -42,22 +45,22 @@ self.addEventListener('fetch', function(event) {
     //     }
     // }
 
-    if (event.request.mode === 'navigate' ||
-        (event.request.method === 'GET' &&
-            event.request.headers.get('accept').includes('text/html'))) {
-        console.log('Handling fetch event for', event.request.url);
-        event.respondWith(
-            fetch(event.request).catch(error => {
-                // The catch is only triggered if fetch() throws an exception, which will most likely
-                // happen due to the server being unreachable.
-                // If fetch() returns a valid HTTP response with an response code in the 4xx or 5xx
-                // range, the catch() will NOT be called. If you need custom handling for 4xx or 5xx
-                // errors, see https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/fallback-response
-                console.log('Fetch failed; returning offline page instead.', error);
-                return caches.match('/offline.html');
-            })
-        );
-    }
+    // if (event.request.mode === 'navigate' ||
+    //     (event.request.method === 'GET' &&
+    //         event.request.headers.get('accept').includes('text/html'))) {
+    //     console.log('Handling fetch event for', event.request.url);
+    //     event.respondWith(
+    //         fetch(event.request).catch(error => {
+    //             // The catch is only triggered if fetch() throws an exception, which will most likely
+    //             // happen due to the server being unreachable.
+    //             // If fetch() returns a valid HTTP response with an response code in the 4xx or 5xx
+    //             // range, the catch() will NOT be called. If you need custom handling for 4xx or 5xx
+    //             // errors, see https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/fallback-response
+    //             console.log('Fetch failed; returning offline page instead.', error);
+    //             // return caches.match('/offline.html');
+    //         })
+    //     );
+    // }
 
     event.respondWith(
         caches.match(event.request).then(function(response) {

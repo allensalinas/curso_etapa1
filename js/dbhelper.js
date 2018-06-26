@@ -9,7 +9,6 @@ class DBHelper {
      */
     static get DATABASE_URL() {
         const port = 8080 // Change this to your server port
-
         return `http://127.0.0.1:${port}/data/restaurants.json`;
     }
 
@@ -17,6 +16,7 @@ class DBHelper {
      * Fetch all restaurants.
      */
     static fetchRestaurants(callback) {
+        console.log('se supone que se debe registrar un nuevo sw');
         let xhr = new XMLHttpRequest();
         xhr.open('GET', DBHelper.DATABASE_URL);
         xhr.onload = () => {
