@@ -1,11 +1,11 @@
-var staticCacheName = 'allen-anothercache-v4';
+var staticCacheName = 'allen-anothercache-v65d';
 
 console.log('archivo SW');
 
 self.addEventListener('install', function(event) {
     // TODO: cache /skeleton rather than the root page
     console.log('Instalando el sw: ' + new Date());
-    
+
     event.waitUntil(
         caches.open(staticCacheName).then(function(cache) {
             return cache.addAll([
@@ -51,35 +51,46 @@ self.addEventListener('activate', function(event) {
     );
 });
 
-self.addEventListener('fetch', function (event) {
+self.addEventListener('fetch', function(event) {
     console.log('Peticiòn: ' + event.request.url);
-    event.respondWith(caches.match(event.request).then(function (response) {
-      // caches.match() always resolves
-      // but in case of success response will have value
-      if (response !== undefined) {
-        console.log('Encontrado en el cache ' + event.request.url);
-        return response;
-      } else {
-        console.log('NO Encontrado en el cache. Tratando de obtener el recurso de la red');
-        return fetch(event.request).then(function (response) {
-          // response may be used only once
-          // we need to save clone to put one copy in cache
-          // and serve second one
-          if (response.status === 404) {
-            console.log('No se encontró en la red');
-            return caches.match('/offline.jpg');
-          } else {
-            let responseClone = response.clone();
-  
-            caches.open(cacheName).then(function (cache) {
-              cache.put(event.request, responseClone);
-            });
+    if (event.request.url.indexOf('maps.googleapis.com') != -1) {
+        event.respondWith(caches.match(event.request).then(function(response) {
+            // caches.match() always resolves
+            // but in case of success response will have value
+            if (response !== undefined) {
+                console.log('Encontrado en el cache ' + event.request.url);
+                return response;
+            } else {
+                console.log('NO Encontrado en el cache. Tratando de obtener el recurso de la red');
+                return fetch(event.request).then(function(response) {
+                    // response may be used only once
+                    // we need to save clone to put one copy in cache
+                    // and serve second one
+                    if (response.status === 404) {
+                        console.log('No se encontró en la red');
+                        return caches.match('/offline.jpg');
+                    } else {
+                        if (event.request.url.indexOf('maps.googleapis.com') == -1) {
+                            console.log('No es google maps');
+                            let responseClone = response.clone();
+
+                            caches.open(cacheName).then(function(cache) {
+                                cache.put(event.request, responseClone);
+                            });
+                        }
+                        return response;
+                    }
+                }).catch(function() {
+                    console.log('Error cargando el recurso: ' + event.request.url);
+                    return caches.match('/offline.jpg').then(function(response) {
+                        return response;
+                    });
+                });
+            }
+        }));
+    } else {
+        return fetch(event.request).then(function(event) {
             return response;
-          }
-        }).catch(function () {
-          console.log('Error cargando ' + event.request);
-          return caches.match('/offline.jpg');
         });
-      }
-    }));
-  });
+    }
+});
