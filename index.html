@@ -23,18 +23,28 @@
         <section>
             <div class="filter-options">
                 <h2>Filter Results</h2>
-                <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-          <option value="all">All Neighborhoods</option>
-        </select>
-                <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-          <option value="all">All Cuisines</option>
-        </select>
+                
+            <br />
+            <div class="filter-options-content">
+                <label>Select the neighborhood 
+                    <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+                        <option value="all">All Neighborhoods</option>
+                    </select>
+                </label>
+                <label>Select the cuisine
+                            <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+                    <option value="all">All Cuisines</option>
+                    </select>
+                </label>
+            </div>
             </div>
             <ul id="restaurants-list"></ul>
 
         </section>
     </main>
-
+<div>
+    <img src="https://www.google.com.co/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Imagen google">
+</div>
     <script type="application/javascript" charset="utf-8" src="js/swcontroller.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
