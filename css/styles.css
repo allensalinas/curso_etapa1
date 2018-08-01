@@ -200,6 +200,7 @@ nav h1 a {
     /* width: 200px; */
 }
 
+
 /* ====================== Restaurant Listing ====================== */
 
 #restaurants-list {
@@ -238,7 +239,7 @@ nav h1 a {
     min-width: 100%;
 }
 
-#restaurants-list li h1 {
+#restaurants-list li h2 {
     color: #f18200;
     font-family: Arial, sans-serif;
     font-size: 14pt;
@@ -268,11 +269,11 @@ nav h1 a {
     width: calc(100% - 60px);
 }
 
-@media screen and (max-width: 450px){
+@media screen and (max-width: 450px) {
     /* body {
         color: red;
     } */
-    .filter-options select{
+    .filter-options select {
         width: calc(100% - 10px);
         padding: 0;
         border: 0;
