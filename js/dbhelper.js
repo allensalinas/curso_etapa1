@@ -10,7 +10,7 @@ class DBHelper {
     static get DATABASE_URL() {
         const port = 8080 // Change this to your server port
         //return `http://127.0.0.1:${port}/data/restaurants.json`;
-        return `data/restaurants.json`;
+        return `data/restaurants.json con error`;
     }
 
     /**
