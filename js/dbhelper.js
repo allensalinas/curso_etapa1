@@ -17,20 +17,29 @@ class DBHelper {
      * Fetch all restaurants.
      */
     static fetchRestaurants(callback) {
+        //1ro: Verifico que no estén guardados en la bd
+        cargarRestaurantes().then(function(restaurantesGuardados) {
+            if (restaurantesGuardados.length > 0) {
+                console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
+                callback(null, restaurantesGuardados);
+            } else {
+                let respuesta = fetch(DBHelper.DATABASE_URL)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(respuestaJson) {
+                        console.log(respuestaJson);
+                        respuestaJson.forEach(element => {
+                            console.log('Creando restaurante en la bd...' + element.id);
+                            crearRestaurante(element);
+                        });
+                        callback(null, respuestaJson);
+                    });
+            }
+        });
 
         //New version fetch
-        let respuesta = fetch(DBHelper.DATABASE_URL)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(respuestaJson) {
-                console.log(respuestaJson);
-                respuestaJson.forEach(element => {
-                    console.log('Creando restaurante...' + element.id);
-                    crearRestaurante(element);
-                });
-                callback(null, respuestaJson);
-            });
+
         // console.log(respuesta);
         /*
                 let xhr = new XMLHttpRequest();

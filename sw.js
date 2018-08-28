@@ -1,4 +1,4 @@
-var staticCacheName = 'allen-cache-v4';
+var staticCacheName = 'allen-cache-v5';
 
 console.log('archivo SW');
 
@@ -51,7 +51,7 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-    console.log('Peticiòn: ' + event.request.url);
+    // console.log('Peticiòn: ' + event.request.url);
     if (event.request.url.indexOf('maps') != -1) {
         event.respondWith(fetch(event.request).then(function(response) {
             return response;
@@ -61,10 +61,10 @@ self.addEventListener('fetch', function(event) {
                 // caches.match() always resolves
                 // but in case of success response will have value
                 if (response !== undefined) {
-                    console.log('Encontrado en el cache ' + event.request.url);
+                    // console.log('Encontrado en el cache ' + event.request.url);
                     return response;
                 } else {
-                    console.log(`NO cache. Tratando de obtener el recurso de la red: ${event.request.url}`);
+                    // console.log(`NO cache. Tratando de obtener el recurso de la red: ${event.request.url}`);
                     return fetch(event.request).then(function(response) {
                         // response may be used only once
                         // we need to save clone to put one copy in cache

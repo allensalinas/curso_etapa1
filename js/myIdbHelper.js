@@ -18,3 +18,15 @@ function crearRestaurante(restaurante) {
         return tx.complete;
     });
 }
+
+function cargarRestaurantes() {
+    return dbPromise.then(function(db) {
+        var tx = db.transaction('restaurants');
+        var store = tx.objectStore('restaurants');
+
+        return store.getAll();
+    }).then(function(restaurants) {
+        // console.log('Esto es lo que encontré: ' + restaurants);
+        return restaurants;
+    });
+}
