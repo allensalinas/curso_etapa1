@@ -1,4 +1,4 @@
-var staticCacheName = 'allen-cache-v3';
+var staticCacheName = 'allen-cache-v4';
 
 console.log('archivo SW');
 
@@ -11,7 +11,6 @@ self.addEventListener('install', function(event) {
             return cache.addAll([
                 './',
                 './index.html',
-                './data/restaurants.json',
                 './js/swcontroller.js',
                 './js/dbhelper.js',
                 './js/main.js',
