@@ -8,29 +8,54 @@ class DBHelper {
      * Change this to restaurants.json file location on your server.
      */
     static get DATABASE_URL() {
-        const port = 8080 // Change this to your server port
-        //return `http://127.0.0.1:${port}/data/restaurants.json`;
-        return `data/restaurants.json`;
+        const port = 1337 // Change this to your server port
+            //return `http://127.0.0.1:${port}/data/restaurants.json`;
+        return `http://localhost:${port}/restaurants`;
     }
 
     /**
      * Fetch all restaurants.
      */
     static fetchRestaurants(callback) {
-        // console.log('fetchRestaurants ' + new Date());
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', DBHelper.DATABASE_URL);
-        xhr.onload = () => {
-            if (xhr.status === 200) { // Got a success response from server!
-                const json = JSON.parse(xhr.responseText);
-                const restaurants = json.restaurants;
-                callback(null, restaurants);
-            } else { // Oops!. Got an error from server.
-                const error = (`Request failed. Returned status of ${xhr.status}`);
-                callback(error, null);
+        //1ro: Verifico que no estén guardados en la bd
+        cargarRestaurantes().then(function(restaurantesGuardados) {
+            if (restaurantesGuardados.length > 0) {
+                console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
+                callback(null, restaurantesGuardados);
+            } else {
+                let respuesta = fetch(DBHelper.DATABASE_URL)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(respuestaJson) {
+                        console.log(respuestaJson);
+                        respuestaJson.forEach(element => {
+                            console.log('Creando restaurante en la bd...' + element.id);
+                            crearRestaurante(element);
+                        });
+                        callback(null, respuestaJson);
+                    });
             }
-        };
-        xhr.send();
+        });
+
+        //New version fetch
+
+        // console.log(respuesta);
+        /*
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', DBHelper.DATABASE_URL);
+                xhr.onload = () => {
+                    if (xhr.status === 200) { // Got a success response from server!
+                        const json = JSON.parse(xhr.responseText);
+                        const restaurants = json;
+                        callback(null, restaurants);
+                    } else { // Oops!. Got an error from server.
+                        const error = (`Request failed. Returned status of ${xhr.status}`);
+                        callback(error, null);
+                    }
+                };
+                xhr.send();
+                */
     }
 
     /**
@@ -152,7 +177,7 @@ class DBHelper {
      * Restaurant image URL.
      */
     static imageUrlForRestaurant(restaurant) {
-        return (`img/${restaurant.photograph}`);
+        return (`img/${restaurant.photograph}.jpg`);
     }
 
     /**
