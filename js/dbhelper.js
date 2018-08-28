@@ -17,6 +17,7 @@ class DBHelper {
      * Fetch all restaurants.
      */
     static fetchRestaurants(callback) {
+
         //New version fetch
         let respuesta = fetch(DBHelper.DATABASE_URL)
             .then(function(response) {
@@ -24,6 +25,10 @@ class DBHelper {
             })
             .then(function(respuestaJson) {
                 console.log(respuestaJson);
+                respuestaJson.forEach(element => {
+                    console.log('Creando restaurante...' + element.id);
+                    crearRestaurante(element);
+                });
                 callback(null, respuestaJson);
             });
         // console.log(respuesta);
