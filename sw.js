@@ -1,4 +1,4 @@
-var staticCacheName = 'allen-cache-v5';
+var staticCacheName = 'allen-cache-v11';
 
 console.log('archivo SW');
 
@@ -57,45 +57,55 @@ self.addEventListener('fetch', function(event) {
             return response;
         }));
     } else {
-        event.respondWith(caches.match(event.request).then(function(response) {
-                // caches.match() always resolves
-                // but in case of success response will have value
+        if (event.request.url.indexOf('restaurant.html') != -1) {
+            console.log('**** Voy a buscar restaurant.html en el cache')
+            event.respondWith(caches.match('restaurant.html').then(function name(response) {
                 if (response !== undefined) {
-                    // console.log('Encontrado en el cache ' + event.request.url);
+                    console.log('**** restaurant.html encontrado');
                     return response;
                 } else {
-                    // console.log(`NO cache. Tratando de obtener el recurso de la red: ${event.request.url}`);
+                    console.log('**** restaurant.html NO encontrado');
                     return fetch(event.request).then(function(response) {
-                        // response may be used only once
-                        // we need to save clone to put one copy in cache
-                        // and serve second one
-                        if (response == undefined) {
-                            console.log('Fetch llegó undefined');
-                        }
-                        if (response == undefined && response.status === 404) {
-                            console.log('No se encontró en la red');
-                            return caches.match('/offline.jpg');
-                        } else {
-                            // let responseClone = response.clone();
-
-                            // caches.open(cacheName).then(function (cache) {
-                            //   cache.put(event.request, responseClone);
-                            // });
-                            return response;
-                        }
-                    }).catch(function() {
-                        console.log(`Error cargando la petición: ${event.request.url}`);
-                        return caches.match('/offline.jpg');
-                    });
+                        return response;
+                    })
                 }
-            })
-            .catch(function(e) {
-                var resultadoError = {
-                    descripcion: e.toString()
-                };
-                return new Response(JSON.stringify(resultadoError), {
-                    headers: { 'Content-Type': 'application/json' }
-                });
             }));
+        } else {
+            event.respondWith(caches.match(event.request).then(function(response) {
+                    if (response !== undefined) {
+                        // console.log('Encontrado en el cache ' + event.request.url);
+                        return response;
+                    } else {
+                        // console.log(`NO cache. Tratando de obtener el recurso de la red: ${event.request.url}`);
+                        return fetch(event.request).then(function(response) {
+                            if (response == undefined) {
+                                console.log('Fetch llegó undefined');
+                            }
+                            if (response == undefined && response.status === 404) {
+                                console.log('No se encontró en la red');
+                                return caches.match('/offline.jpg');
+                            } else {
+                                // let responseClone = response.clone();
+
+                                // caches.open(cacheName).then(function (cache) {
+                                //   cache.put(event.request, responseClone);
+                                // });
+                                return response;
+                            }
+                        }).catch(function() {
+                            console.log(`Error cargando la petición: ${event.request.url}`);
+                            return caches.match('offline.jpg');
+                        });
+                    }
+                })
+                .catch(function(e) {
+                    var resultadoError = {
+                        descripcion: e.toString()
+                    };
+                    return new Response(JSON.stringify(resultadoError), {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                }));
+        }
     }
 });
