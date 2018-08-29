@@ -1,0 +1,24 @@
+{
+    "short_name": "RestRvw",
+    "name": "¡Restaurants Reviews!",
+    "icons": [{
+            "src": "/icons/icono_144.png",
+            "type": "image/png",
+            "sizes": "144x144"
+        },
+        {
+            "src": "/icons/icono_192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/icons/icono_512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "index.html?launcher=true",
+    "display": "fullscreen",
+    "background_color": "#3397DB",
+    "theme_color": "#FFA500"
+}
