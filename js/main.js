@@ -138,11 +138,15 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
     const li = document.createElement('li');
 
-    const image = document.createElement('img');
-    image.className = 'restaurant-img';
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
-    image.alt = restaurant.name;
-    li.append(image);
+    if (restaurant.photograph !== undefined) {
+        const image = document.createElement('img');
+        image.className = 'restaurant-img';
+        image.src = DBHelper.imageUrlForRestaurant(restaurant);
+        image.alt = restaurant.name;
+        li.append(image);
+    } else {
+        console.log('El restaurante ' + restaurant.name + ' no tiene imagen');
+    }
 
     const name = document.createElement('h2');
     name.innerHTML = restaurant.name;
@@ -170,12 +174,16 @@ createRestaurantHTML = (restaurant) => {
  * Add markers for current restaurants to the map.
  */
 addMarkersToMap = (restaurants = self.restaurants) => {
-    restaurants.forEach(restaurant => {
-        // Add marker to the map
-        const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-        google.maps.event.addListener(marker, 'click', () => {
-            window.location.href = marker.url
+    if (google !== undefined) {
+        restaurants.forEach(restaurant => {
+            // Add marker to the map
+            const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+            google.maps.event.addListener(marker, 'click', () => {
+                window.location.href = marker.url
+            });
+            self.markers.push(marker);
         });
-        self.markers.push(marker);
-    });
+    } else {
+        console.log('google no está definido');
+    }
 }

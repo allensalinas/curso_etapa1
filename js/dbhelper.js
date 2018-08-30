@@ -65,6 +65,7 @@ class DBHelper {
         // fetch all restaurants with proper error handling.
         DBHelper.fetchRestaurants((error, restaurants) => {
             if (error) {
+                console.log('error consultando el restaurante');
                 callback(error, null);
             } else {
                 const restaurant = restaurants.find(r => r.id == id);
@@ -177,6 +178,9 @@ class DBHelper {
      * Restaurant image URL.
      */
     static imageUrlForRestaurant(restaurant) {
+        if (restaurant === undefined) {
+            return null;
+        }
         return (`img/${restaurant.photograph}.jpg`);
     }
 
@@ -184,6 +188,9 @@ class DBHelper {
      * Map marker for a restaurant.
      */
     static mapMarkerForRestaurant(restaurant, map) {
+        if (google === undefined) {
+            return null;
+        }
         const marker = new google.maps.Marker({
             position: restaurant.latlng,
             title: restaurant.name,
