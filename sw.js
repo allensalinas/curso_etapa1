@@ -1,13 +1,13 @@
-var staticCacheName = 'allen-entrega2-cache-b';
+var staticCacheName = 'allen-entrega2-cache2d';
 
 console.log('archivo SW');
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function (event) {
     // TODO: cache /skeleton rather than the root page
     console.log('Instalando el sw: ' + new Date());
 
     event.waitUntil(
-        caches.open(staticCacheName).then(function(cache) {
+        caches.open(staticCacheName).then(function (cache) {
             return cache.addAll([
                 './',
                 './index.html',
@@ -17,8 +17,7 @@ self.addEventListener('install', function(event) {
                 './js/restaurant_info.js',
                 './js/idb.js',
                 './js/myIdbHelper.js',
-                './css/styles.css',
-                './css/detail.css',
+                './css/all.min.css',
                 './img/1.jpg',
                 './img/2.jpg',
                 './img/3.jpg',
@@ -34,19 +33,19 @@ self.addEventListener('install', function(event) {
                 './offline.jpg',
                 './manifest.json'
             ]);
-        }).catch(function(reason) { 'Error in install event: ' + console.log(reason); })
+        }).catch(function (reason) { 'Error in install event: ' + console.log(reason); })
     );
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function (event) {
     console.log('evento activate ' + new Date());
     event.waitUntil(
-        caches.keys().then(function(cacheNames) {
+        caches.keys().then(function (cacheNames) {
             return Promise.all(
-                cacheNames.filter(function(cacheName) {
+                cacheNames.filter(function (cacheName) {
                     return cacheName.startsWith('allen-') &&
                         cacheName != staticCacheName;
-                }).map(function(cacheName) {
+                }).map(function (cacheName) {
                     console.log('deleting old cache');
                     return caches.delete(cacheName);
                 })
@@ -55,26 +54,42 @@ self.addEventListener('activate', function(event) {
     );
 });
 
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.match(event.request).then(function(response) {
-            if (response !== undefined) {
-                return response;
-            } else {
-                return fetch(event.request).then(
-                    function name(response) {
-                        if (response.ok) {
-                            console.log('Response ok');
-                        } else {
-                            console.log('Response false');
+self.addEventListener('fetch', function (event) {
+    // if (event.request.url.indexOf('restaurant.html')!=-1) {
+    //     return caches.match('restaurant.html');
+    // }else
+    // {
+    if (event.request.url.indexOf('google') != -1) {
+        event.respondWith(fetch(event.request)
+            .then(
+                function(response){return response;}
+            ).catch(function(){
+                return Response('ups');
+            }));
+    } else {
+        event.respondWith(
+            caches.match(event.request, { ignoreSearch: true }).then(function (response) {
+                if (response !== undefined) {
+                    // if (event.request.url.indexOf('restaurant.html')) {
+                    //     response.url = event.request.url;
+                    // }
+                    return response;
+                } else {
+                    return fetch(event.request).then(
+                        function name(response) {
+                            if (response.ok) {
+                                console.log('Response ok');
+                            } else {
+                                console.log('Response false');
+                            }
+                            return response;
                         }
-                        return response;
-                    }
-                ).catch(function() {
-                    return caches.match('offline.jpg');
-                });
-            }
-        }));
+                    ).catch(function () {
+                        return caches.match('offline.jpg');
+                    });
+                }
+            }));
+    }
 });
 
 // self.addEventListener('fetch', function(event) {

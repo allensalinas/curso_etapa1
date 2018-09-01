@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color">
-    <!-- <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" /> -->
-    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.0/normalize.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <meta name="theme-color" content="#FFA500">
     <title>Restaurant Reviews</title>
+    <!-- <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css"> -->
+    <link rel="stylesheet" href="css/all.min.css" type="text/css"
 </head>
 
 <body>
@@ -28,14 +28,14 @@
 
                 <br />
                 <div class="filter-options-content">
-                    <label>Select the neighborhood 
+                <label>Select the neighborhood 
                     <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
                         <option value="all">All Neighborhoods</option>
                     </select>
                 </label>
-                    <label>Select the cuisine
-                            <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-                    <option value="all">All Cuisines</option>
+                <label>Select the cuisine
+                    <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+                        <option value="all">All Cuisines</option>
                     </select>
                 </label>
                 </div>
@@ -52,7 +52,6 @@
     <script type="application/javascript" charset="utf-8" src="js/idb.js"></script>
     <script type="application/javascript" charset="utf-8" src="js/myIdbHelper.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-2F85JEOCFywfCbrppERYhldnWVXP60w&libraries=places&callback=initMap"></script>
-
 
     <footer id="footer">
         Copyright (c) 2017 <strong>Restaurant Reviews</strong> All Rights Reserved.

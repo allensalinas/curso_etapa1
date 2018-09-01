@@ -174,7 +174,7 @@ createRestaurantHTML = (restaurant) => {
  * Add markers for current restaurants to the map.
  */
 addMarkersToMap = (restaurants = self.restaurants) => {
-    if (google !== undefined) {
+    if (google) {
         restaurants.forEach(restaurant => {
             // Add marker to the map
             const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
