@@ -36,9 +36,11 @@ fetchRestaurantFromURL = (callback) => {
         DBHelper.fetchRestaurantById(id, (error, restaurant) => {
             self.restaurant = restaurant;
             if (!restaurant) {
-                console.error(error);
+                console.log('No encontré el restaurante: ' + error);
+                // console.error(error);
                 return;
             }
+            console.log('Encontré el restaurante ' + id);
             fillRestaurantHTML();
             callback(null, restaurant)
         });
