@@ -10,6 +10,7 @@ var markers = []
 document.addEventListener('DOMContentLoaded', (event) => {
     fetchNeighborhoods();
     fetchCuisines();
+    fetchReviews();
 });
 
 /**
@@ -22,6 +23,16 @@ fetchNeighborhoods = () => {
         } else {
             self.neighborhoods = neighborhoods;
             fillNeighborhoodsHTML();
+        }
+    });
+}
+
+fetchReviews = () => {
+    DBHelper.fetchReviews((error, reviews) => {
+        if (error) { // Got an error
+            console.error('Error en main.js fetchReviews: ' + error);
+        } else {
+            self.reviews = reviews;
         }
     });
 }
@@ -151,6 +162,13 @@ createRestaurantHTML = (restaurant) => {
     const name = document.createElement('h2');
     name.innerHTML = restaurant.name;
     li.append(name);
+
+    if (!restaurant.is_favorite) {
+        const favorito = document.createElement('span');
+        favorito.className = 'favorite-star';
+        favorito.innerText = '★';
+        li.append(favorito);
+    }
 
     const neighborhood = document.createElement('p');
     neighborhood.innerHTML = restaurant.neighborhood;

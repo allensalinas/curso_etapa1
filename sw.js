@@ -1,4 +1,4 @@
-var staticCacheName = 'allen-entrega2-cache2d';
+var staticCacheName = 'allen-entrega3-cache5';
 
 console.log('archivo SW');
 

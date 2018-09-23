@@ -13,6 +13,18 @@ class DBHelper {
         return `http://localhost:${port}/restaurants`;
     }
 
+    static get RESTAURANT_REVIEW_URL() {
+        const port = 1337 // Change this to your server port
+        //return `http://127.0.0.1:${port}/data/restaurants.json`;
+        return `http://localhost:${port}/reviews`;
+    }
+
+    // static get POST_REVIEW_URL(){
+    //     const port = 1337 // Change this to your server port
+    //     //return `http://127.0.0.1:${port}/data/restaurants.json`;
+    //     return `http://localhost:${port}/reviews`;
+    // }
+
     /**
      * Fetch all restaurants.
      */
@@ -37,25 +49,32 @@ class DBHelper {
                     });
             }
         });
+    }
 
-        //New version fetch
-
-        // console.log(respuesta);
-        /*
-                let xhr = new XMLHttpRequest();
-                xhr.open('GET', DBHelper.DATABASE_URL);
-                xhr.onload = () => {
-                    if (xhr.status === 200) { // Got a success response from server!
-                        const json = JSON.parse(xhr.responseText);
-                        const restaurants = json;
-                        callback(null, restaurants);
-                    } else { // Oops!. Got an error from server.
-                        const error = (`Request failed. Returned status of ${xhr.status}`);
-                        callback(error, null);
-                    }
-                };
-                xhr.send();
-                */
+    /**
+ * Fetch all restaurants.
+ */
+    static fetchReviews(callback) {
+        //1ro: Verifico que no estén guardados en la bd
+        cargarReviews().then(function (reviewsGuardados) {
+            if (reviewsGuardados.length > 0) {
+                console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
+                callback(null, reviewsGuardados);
+            } else {
+                let respuesta = fetch(DBHelper.RESTAURANT_REVIEW_URL)
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (respuestaJson) {
+                        console.log(respuestaJson);
+                        respuestaJson.forEach(element => {
+                            console.log('Creando review en la bd...' + element.id);
+                            crearReview(element);
+                        });
+                        callback(null, respuestaJson);
+                    });
+            }
+        });
     }
 
     /**
@@ -70,6 +89,14 @@ class DBHelper {
             } else {
                 const restaurant = restaurants.find(r => r.id == id);
                 if (restaurant) { // Got the restaurant
+                    // DBHelper.fetchReviewsByRestaurant((errorrvs, reviews)=>{
+                    //     if (errorrvs) {
+                    //         callback(errorrvs, null);
+                    //     }else
+                    //     {
+                    //         restaurant.reviews = reviews;
+                    //     }
+                    // })
                     callback(null, restaurant);
                 } else { // Restaurant does not exist in the database
                     callback('Restaurant does not exist', null);
@@ -165,6 +192,58 @@ class DBHelper {
                 callback(null, uniqueCuisines);
             }
         });
+    }
+
+    static fetchReviewsByRestaurant(restaurant_id, callback) {
+        // fetch all restaurants with proper error handling.
+        DBHelper.fetchReviews((error, reviews) => {
+            if (error) {
+                console.log('error consultando las reviews del restaurante: ' + restaurant_id);
+                callback(error, null);
+            } else {
+                // const result = reviews.find() .find(r => r.id == id);
+                const result = reviews.filter(r => r.restaurant_id == restaurant_id);
+                if (result) { // Got the reviews
+                    callback(null, result);
+                } else { // Restaurant does not exist in the database
+                    callback('No se encontraron reviews', null);
+                }
+            }
+        });
+    }
+
+    static postReview(review, callback) {
+        fetch(this.RESTAURANT_REVIEW_URL, {
+            method: 'post',
+            body: {
+                "restaurant_id": review.restaurant_id,
+                "name": review.name,
+                "rating": review.rating,
+                "comments": review.comments
+            }
+            //body: JSON.stringify(review)
+        }).then(function (response) {
+            if (response.statusText== "Created") { //Creado
+                return true;
+                // callback(null, 'OK');
+            } else {
+                // review.pending = true;
+                return false;
+            }
+            // console.log('respuesta del servidor: ' + response.json());            
+        }).then(function (sincronizado) {
+            review.createdAt = review.id;
+            if (!sincronizado) {
+                review.pending = true;
+            }
+            crearReview(review);
+            callback(null, review);
+        })
+        .catch(function (errorResponse) {
+            let error = 'Error ejecutando la petición: ' + errorResponse;
+            console.log(error);
+            callback(error, null);
+        })
     }
 
     /**

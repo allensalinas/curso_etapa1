@@ -230,6 +230,12 @@ nav h1 a {
     /* display: flex; */
 }
 
+#restaurants-list li .favorite-star {
+    color: #191baf;
+    font-size: 3rem;
+    float: right;
+}
+
 #restaurants-list .restaurant-img {
     background-color: #ccc;
     display: block;
