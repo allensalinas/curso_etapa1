@@ -22,7 +22,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task('compress', function() {
-  gulp.src(['lib/*.js', 'lib/*.mjs'])
+  gulp.src(['sourcejs/*.js', 'sourcejs/*.mjs'])
     .pipe(minify())
     .pipe(gulp.dest('js'))
 });

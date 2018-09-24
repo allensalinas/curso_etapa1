@@ -1,4 +1,4 @@
-var staticCacheName = 'allen-entrega3-124dddddDddAdd2';
+var staticCacheName = 'allen-entrega3-v1';
 
 console.log('archivo SW');
 
@@ -11,12 +11,12 @@ self.addEventListener('install', function (event) {
             return cache.addAll([
                 './',
                 './index.html',
-                './js/swcontroller.js',
-                './js/dbhelper.js',
-                './js/main.js',
-                './js/restaurant_info.js',
-                './js/idb.js',
-                './js/myIdbHelper.js',
+                './js/swcontroller-min.js',
+                './js/dbhelper-min.js',
+                './js/main-min.js',
+                './js/restaurant_info-min.js',
+                './js/idb-min.js',
+                './js/myIdbHelper-min.js',
                 './css/all.min.css',
                 './img/1.jpg',
                 './img/2.jpg',
