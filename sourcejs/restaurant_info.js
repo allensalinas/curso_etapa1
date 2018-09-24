@@ -5,6 +5,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     btnPostReview.addEventListener('click', postReview);
 });
 
+function getFavoriteSymbol(is_favorite) {
+    if (is_favorite) {
+        return "♥";
+    } else {
+        return "♡";
+    }
+}
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -79,7 +87,6 @@ fetchRestaurantFromURL = (callback) => {
                 // console.error(error);
                 return;
             }
-            console.log('Encontré el restaurante ' + id);
             fillRestaurantHTML();
             getReviews();
             callback(null, restaurant)
@@ -106,9 +113,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     address.innerHTML = restaurant.address;
 
     const image = document.getElementById('restaurant-img');
-    image.className = 'restaurant-img'
+    image.className = 'restaurant-img';
     image.src = DBHelper.imageUrlForRestaurant(restaurant);
-    image.alt = restaurant.name;
+    image.alt = "Picture of " + restaurant.name;
 
     const cuisine = document.getElementById('restaurant-cuisine');
     cuisine.innerHTML = restaurant.cuisine_type;
@@ -119,6 +126,28 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     }
     // fill reviews
     // fillReviewsHTML();
+    btnFavorite.innerText = getFavoriteSymbol(restaurant.is_favorite);
+    if (restaurant.is_favorite) {
+        btnFavorite.classList.add('favorite-star');
+    }
+    
+    btnFavorite.addEventListener('click', function () {
+        var nr = self.restaurant;
+        console.log('Event listener on: ' + nr.id);
+        this.classList.toggle('favorite-star');
+        this.innerText = getFavoriteSymbol(this.classList.contains('favorite-star'));
+        nr.is_favorite = this.classList.contains('favorite-star');
+        DBHelper.changeFavoriteStatus(nr, (error, resultado) => {
+            if (error) { // Got an error!
+                console.error(error);
+                // alert(error);
+            } else {
+                if (!resultado) {
+                    alert('We couldn`t update the restaurant preference');
+                }
+            }
+        })
+    });
 }
 
 /**
@@ -197,10 +226,10 @@ createReviewHTML = (review) => {
  * Add restaurant name to the breadcrumb navigation menu
  */
 fillBreadcrumb = (restaurant = self.restaurant) => {
-    const breadcrumb = document.getElementById('breadcrumb');
-    const li = document.createElement('li');
-    li.innerHTML = restaurant.name;
-    breadcrumb.appendChild(li);
+    // const breadcrumb = document.getElementById('breadcrumb');
+    // const li = document.createElement('li');
+    // li.innerHTML = restaurant.name;
+    // breadcrumb.appendChild(li);
 }
 
 /**

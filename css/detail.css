@@ -1,7 +1,39 @@
 /* ====================== Restaurant Details ====================== */
+.inside header {
+    /* height: 350px; */
+    background-color: black !important;
+    color: #fff;
+}
+
+.inside nav{
+    /* width: calc(100% - 80px); */
+    width: 100%;
+}
 
 .inside #map {
     height: 350px;
+}
+
+/* .inside #map{
+    background-color: black;
+    color: #fff;
+} */
+
+.inside nav ul{
+    background-color: #EEEEEE;
+    color: #333333;
+    /* text-align: left; */
+}
+
+.inside #breadcrumb {
+    /* padding: 10px 40px 16px; */
+    padding: 10px 0px;
+    list-style: none;
+    font-size: 17px;
+    margin: 0;
+    background-color: black !important;
+    /* width: calc(50% - 80px); */
+    /* width: 100%; */
 }
 
 #restaurant-container {
@@ -121,6 +153,22 @@
 
 #input-review {
     width:calc(100% - 6px);
+}
+
+#restaurant-detail .favorite {
+        /* color: #191baf;
+        font-size: 2rem; */
+        font-size: 2rem;
+        border-style: none;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        background-color: white;
+        /* content: "♡"; */
+}
+    
+#restaurant-detail  .favorite-star {
+    color: red;
+    /* content: "♥"; */
 }
 
 @media only screen and (max-width:400px) {
