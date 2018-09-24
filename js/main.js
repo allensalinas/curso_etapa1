@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     fetchNeighborhoods();
     fetchCuisines();
     fetchReviews();
+    updateRestaurants();
+    // document.querySelectorAll(".")
+    // fillRestaurantsHTML();
 });
 
 /**
@@ -81,7 +84,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+initMap =()=>{
     let loc = {
         lat: 40.722216,
         lng: -73.987501
@@ -91,8 +94,22 @@ window.initMap = () => {
         center: loc,
         scrollwheel: false
     });
-    updateRestaurants();
+    // fillRestaurantsHTML();
+    addMarkersToMap();
 }
+// function initMap(){
+//     let loc = {
+//         lat: 40.722216,
+//         lng: -73.987501
+//     };
+//     self.map = new google.maps.Map(document.getElementById('map'), {
+//         zoom: 12,
+//         center: loc,
+//         scrollwheel: false
+//     });
+//     // fillRestaurantsHTML();
+//     addMarkersToMap();
+// }
 
 /**
  * Update page and map for current restaurants.
@@ -112,7 +129,7 @@ updateRestaurants = () => {
             console.error(error);
         } else {
             resetRestaurants(restaurants);
-            fillRestaurantsHTML();
+            fillRestaurantsHTML(restaurants);
         }
     })
 }
@@ -135,12 +152,11 @@ resetRestaurants = (restaurants) => {
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
-fillRestaurantsHTML = (restaurants = self.restaurants) => {
+fillRestaurantsHTML = (restaurants) => {
     const ul = document.getElementById('restaurants-list');
     restaurants.forEach(restaurant => {
         ul.append(createRestaurantHTML(restaurant));
     });
-    addMarkersToMap();
 }
 
 /**
@@ -163,12 +179,35 @@ createRestaurantHTML = (restaurant) => {
     name.innerHTML = restaurant.name;
     li.append(name);
 
-    if (!restaurant.is_favorite) {
-        const favorito = document.createElement('span');
-        favorito.className = 'favorite-star';
-        favorito.innerText = '★';
+    // if (!restaurant.is_favorite) {
+    //     const favorito = document.createElement('button');
+    //     favorito.className = 'favorite-star';
+    //     favorito.innerText = '★';
+    //     li.append(favorito);
+    // }
+    const favorito = document.createElement('button');
+        favorito.className = 'favorite';
+        if (restaurant.is_favorite){
+            favorito.classList.add('favorite-star');
+        }
+        favorito.innerText = getFavoriteSymbol(restaurant.is_favorite);
+        favorito.addEventListener('click', function(){
+            console.log(restaurant.id);
+            this.classList.toggle('favorite-star');
+            this.innerText=getFavoriteSymbol(this.classList.contains('favorite-star'));
+            restaurant.is_favorite = this.classList.contains('favorite-star');
+            DBHelper.changeFavoriteStatus(restaurant, (error, resultado) => {
+                if (error) { // Got an error!
+                    console.error(error);
+                    alert(error);
+                } else {
+                    if (!resultado) {
+                        alert('We couldn`t update the restaurant preference');
+                    }
+                }
+            })
+        });
         li.append(favorito);
-    }
 
     const neighborhood = document.createElement('p');
     neighborhood.innerHTML = restaurant.neighborhood;
@@ -186,6 +225,14 @@ createRestaurantHTML = (restaurant) => {
     li.append(more);
 
     return li;
+}
+
+function getFavoriteSymbol(is_favorite){
+    if(is_favorite){
+        return "♥";
+    }else{
+        return "♡";
+    }
 }
 
 /**

@@ -2,47 +2,73 @@ let restaurant;
 var map;
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    // alert('cargado');
+    console.log('Voy a buscar el restaurante...');
     btnPostReview.addEventListener('click', postReview);
+    fetchRestaurantFromURL((error, restaurant) => {
+        if (error) { // Got an error!
+            console.error(error);
+        } else {
+            // self.map = new google.maps.Map(document.getElementById('map'), {
+            //     zoom: 16,
+            //     center: restaurant.latlng,
+            //     scrollwheel: false
+            // });
+            // fillBreadcrumb();
+            // DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+        }
+    });
 });
 
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
-    fetchRestaurantFromURL((error, restaurant) => {
-        if (error) { // Got an error!
-            console.error(error);
-        } else {
-            self.map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: restaurant.latlng,
-                scrollwheel: false
-            });
-            fillBreadcrumb();
-            DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-        }
+// window.initMap = () => {
+//     fetchRestaurantFromURL((error, restaurant) => {
+//         if (error) { // Got an error!
+//             console.error(error);
+//         } else {
+//             self.map = new google.maps.Map(document.getElementById('map'), {
+//                 zoom: 16,
+//                 center: restaurant.latlng,
+//                 scrollwheel: false
+//             });
+//             fillBreadcrumb();
+//             DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+//         }
+//     });
+// }
+
+function initMap() {
+    self.map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: self.restaurant.latlng,
+        scrollwheel: false
     });
+    fillBreadcrumb();
+    DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
 }
 
-postReview = function(){
+postReview = function () {
     console.log('postreview...' + new Date().toDateString());
     let comment = document.getElementById('input-review').value;
     let username = document.getElementById('input-username').value;
-    if (comment==='') {
+    if (comment === '') {
         alert('please give us some comment...');
         return;
+    }
+    if (username==='') {
+        username = 'Anonymous';
     }
     let newReview = {
         id: new Date().getTime(),
         restaurant_id: self.restaurant.id,
         name: username,
         createdAt: 0,
-        rating:document.getElementById('list-rating').value,
-        updatedAt:0,
+        rating: document.getElementById('list-rating').value,
+        updatedAt: 0,
         comments: comment
     };
-    DBHelper.postReview(newReview, (error, respuesta)=>{
+    DBHelper.postReview(newReview, (error, respuesta) => {
         if (!respuesta) {
             console.log('no se pudo obtener una respuesta exitosa');
             alert(error);
@@ -50,7 +76,7 @@ postReview = function(){
         }
         getReviews();
         // if (respuesta.status == 201) { //Creado
-            
+
         // }
     }
     )
@@ -77,7 +103,7 @@ fetchRestaurantFromURL = (callback) => {
                 // console.error(error);
                 return;
             }
-            console.log('Encontré el restaurante ' + id);            
+            console.log('Encontré el restaurante ' + id);
             fillRestaurantHTML();
             getReviews();
             callback(null, restaurant)
@@ -88,7 +114,7 @@ fetchRestaurantFromURL = (callback) => {
 function getReviews() {
     DBHelper.fetchReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
         self.restaurant.reviews = reviews;
-        fillReviewsHTML();    
+        fillReviewsHTML();
     }
     );
 }

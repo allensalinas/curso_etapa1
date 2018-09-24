@@ -19,6 +19,11 @@ class DBHelper {
         return `http://localhost:${port}/reviews`;
     }
 
+    static getChangeFavoriteURL(restaurant_id, is_favorite){
+        const port = 1337;
+        return `http://localhost:${port}/restaurants/${restaurant_id}/?is_favorite=${is_favorite}`;
+    }
+
     // static get POST_REVIEW_URL(){
     //     const port = 1337 // Change this to your server port
     //     //return `http://127.0.0.1:${port}/data/restaurants.json`;
@@ -239,6 +244,36 @@ class DBHelper {
             crearReview(review);
             callback(null, review);
         })
+        .catch(function (errorResponse) {
+            let error = 'Error ejecutando la petición: ' + errorResponse;
+            console.log(error);
+            callback(error, null);
+        })
+    }
+
+    static changeFavoriteStatus(restaurant, callback) {
+        fetch(this.getChangeFavoriteURL(restaurant.id, restaurant.is_favorite), {
+            method: 'put'
+        }).then(function (response) {
+            if (response.ok) { //Creado
+                callback(null, true);
+                // return true;
+                // callback(null, 'OK');
+            } else {
+                // review.pending = true;
+                // return false;
+                callback(null, false);
+            }
+            // console.log('respuesta del servidor: ' + response.json());
+        })
+        // .then(function (actualizadoServicio) {
+        //     restaurant.is.createdAt = review.id;
+        //     if (!sincronizado) {
+        //         review.pending = true;
+        //     }
+        //     crearReview(review);
+        //     callback(null, review);
+        // })
         .catch(function (errorResponse) {
             let error = 'Error ejecutando la petición: ' + errorResponse;
             console.log(error);
