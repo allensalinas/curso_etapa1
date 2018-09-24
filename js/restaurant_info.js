@@ -1,23 +1,86 @@
 let restaurant;
 var map;
 
-/**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => {
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log('Voy a buscar el restaurante...');
+    btnPostReview.addEventListener('click', postReview);
     fetchRestaurantFromURL((error, restaurant) => {
         if (error) { // Got an error!
             console.error(error);
         } else {
-            self.map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: restaurant.latlng,
-                scrollwheel: false
-            });
-            fillBreadcrumb();
-            DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+            // self.map = new google.maps.Map(document.getElementById('map'), {
+            //     zoom: 16,
+            //     center: restaurant.latlng,
+            //     scrollwheel: false
+            // });
+            // fillBreadcrumb();
+            // DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
         }
     });
+});
+
+/**
+ * Initialize Google map, called from HTML.
+ */
+// window.initMap = () => {
+//     fetchRestaurantFromURL((error, restaurant) => {
+//         if (error) { // Got an error!
+//             console.error(error);
+//         } else {
+//             self.map = new google.maps.Map(document.getElementById('map'), {
+//                 zoom: 16,
+//                 center: restaurant.latlng,
+//                 scrollwheel: false
+//             });
+//             fillBreadcrumb();
+//             DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+//         }
+//     });
+// }
+
+function initMap() {
+    self.map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: self.restaurant.latlng,
+        scrollwheel: false
+    });
+    fillBreadcrumb();
+    DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+}
+
+postReview = function () {
+    console.log('postreview...' + new Date().toDateString());
+    let comment = document.getElementById('input-review').value;
+    let username = document.getElementById('input-username').value;
+    if (comment === '') {
+        alert('please give us some comment...');
+        return;
+    }
+    if (username==='') {
+        username = 'Anonymous';
+    }
+    let newReview = {
+        id: new Date().getTime(),
+        restaurant_id: self.restaurant.id,
+        name: username,
+        createdAt: 0,
+        rating: document.getElementById('list-rating').value,
+        updatedAt: 0,
+        comments: comment
+    };
+    DBHelper.postReview(newReview, (error, respuesta) => {
+        if (!respuesta) {
+            console.log('no se pudo obtener una respuesta exitosa');
+            alert(error);
+            return;
+        }
+        getReviews();
+        // if (respuesta.status == 201) { //Creado
+
+        // }
+    }
+    )
+    // crearReview(newReview);
 }
 
 /**
@@ -42,9 +105,18 @@ fetchRestaurantFromURL = (callback) => {
             }
             console.log('Encontré el restaurante ' + id);
             fillRestaurantHTML();
+            getReviews();
             callback(null, restaurant)
         });
     }
+}
+
+function getReviews() {
+    DBHelper.fetchReviewsByRestaurant(self.restaurant.id, (error, reviews) => {
+        self.restaurant.reviews = reviews;
+        fillReviewsHTML();
+    }
+    );
 }
 
 /**
@@ -70,7 +142,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
         fillRestaurantHoursHTML();
     }
     // fill reviews
-    fillReviewsHTML();
+    // fillReviewsHTML();
 }
 
 /**
@@ -98,9 +170,9 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     const container = document.getElementById('reviews-container');
-    const title = document.createElement('h3');
-    title.innerHTML = 'Reviews';
-    container.appendChild(title);
+    // const title = document.createElement('h3');
+    // title.innerHTML = 'Reviews';
+    // container.appendChild(title);
 
     if (!reviews) {
         const noReviews = document.createElement('p');
@@ -125,7 +197,7 @@ createReviewHTML = (review) => {
     li.appendChild(name);
 
     const date = document.createElement('p');
-    date.innerHTML = review.date;
+    date.innerHTML = new Date(review.createdAt).toDateString();
     li.appendChild(date);
 
     const rating = document.createElement('p');
@@ -135,6 +207,12 @@ createReviewHTML = (review) => {
     const comments = document.createElement('p');
     comments.innerHTML = review.comments;
     li.appendChild(comments);
+
+    if (review.pending !== undefined) {
+        const small = document.createElement('small');
+        small.innerText = "Pending to synchronize";
+        li.appendChild(small);
+    }
 
     return li;
 }

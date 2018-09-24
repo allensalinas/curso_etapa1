@@ -24,11 +24,15 @@
     <header>
         <!-- Beginning nav -->
         <nav tabindex="0">
-            <h1><a href="/">Restaurant Reviews</a></h1>
+            <h1>
+                <a href="/">Restaurant Reviews</a>
+            </h1>
         </nav>
         <!-- Beginning breadcrumb -->
         <ul id="breadcrumb" role="navigation" aria-label="Breadcrumb">
-            <li><a href="./">Home</a></li>
+            <li>
+                <a href="./">Home</a>
+            </li>
         </ul>
         <!-- End breadcrumb -->
         <!-- End nav -->
@@ -59,7 +63,40 @@
         <!-- end restaurant -->
         <!-- Beginning reviews -->
         <section id="reviews-container">
-            <ul id="reviews-list"></ul>
+            <h3>Reviews</h3>
+            <!-- <section id="add-review">
+                
+            </section> -->
+            <ul id="reviews-list">
+                <li>
+                    <h4>Add your review:</h4>
+                    <ul class="review-panel">
+                        <li>
+                            <label for="input-username">Name: &nbsp;</label>
+                            <input type="text" id="input-username" placeholder="Input your name here">
+                        </li>
+                        <li>
+                            <label>
+                                Comments:
+                                <br>
+                                <textarea name="input-review" id="input-review" cols="90" rows="10" maxlength="500" placeholder="Give us your opinion..."></textarea>
+                                <!-- <input type="text" name="txt-addreview" id="txt-addreview"> -->
+                            </label>
+                        </li>
+                        <li>
+                            <label for="list-rating">Rate this restaurant&nbsp;</label>
+                            <select name="list-rating" id="list-rating">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5</option>
+                            </select>
+                        </li>
+                    </ul>
+                    <button name="btnPostReview" id="btnPostReview">➤Post review</button>
+                </li>
+            </ul>
         </section>
         <!-- End reviews -->
     </main>
@@ -67,7 +104,10 @@
 
     <!-- Beginning footer -->
     <footer id="footer">
-        Copyright (c) 2017 <a href="./"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+        Copyright (c) 2017
+        <a href="./">
+            <strong>Restaurant Reviews</strong>
+        </a> All Rights Reserved.
     </footer>
     <!-- End footer -->
 
@@ -78,7 +118,7 @@
     <!-- Main javascript file -->
     <script type="text/javascript" src="js/restaurant_info.js"></script>
     <!-- Google Maps -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-2F85JEOCFywfCbrppERYhldnWVXP60w&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-2F85JEOCFywfCbrppERYhldnWVXP60w&libraries=places&callback=initMap" callback=initMap"></script>
     <!-- End scripts -->
 
 </body>

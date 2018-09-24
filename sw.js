@@ -1,4 +1,4 @@
-var staticCacheName = 'allen-entrega2-cache2d';
+var staticCacheName = 'allen-entrega3-c12e3dfda';
 
 console.log('archivo SW');
 
@@ -60,12 +60,18 @@ self.addEventListener('fetch', function (event) {
     // }else
     // {
     if (event.request.url.indexOf('google') != -1) {
-        event.respondWith(fetch(event.request)
-            .then(
-                function(response){return response;}
-            ).catch(function(){
-                return Response('ups');
-            }));
+        return;
+        // event.respondWith(fetch(event.request)
+        //     .then(
+        //         function(response){return response;}
+        //     )
+        //     .catch(function(){
+        //         return new Response()
+        //         //return new Response('Hello from your friendly neighbourhood service worker!');
+        //         // return Response('ups');
+        //         }
+        //     )
+        // );
     } else {
         event.respondWith(
             caches.match(event.request, { ignoreSearch: true }).then(function (response) {
