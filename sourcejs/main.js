@@ -253,7 +253,8 @@ addMarkersToMap = (restaurants = self.restaurants) => {
         // self.markers.push(marker);
     });
     var ubicaciones = markersUrl.join('|');
-    let url = `https://maps.googleapis.com/maps/api/staticmap?center=New+York,NY&zoom=10&size=600x300&maptype=roadmap&markers=color:blue|${ubicaciones}&key=AIzaSyDAqo8LahB9tPG57aPOO9ylY-uX_dfYNBw`;
+    let url = `https://maps.googleapis.com/maps/api/staticmap?center=New+York,NY&zoom=12&size=600x350&maptype=roadmap&markers=color:blue|${ubicaciones}&key=AIzaSyDAqo8LahB9tPG57aPOO9ylY-uX_dfYNBw`;
+    // let url = `https://maps.googleapis.com/maps/api/staticmap?center=New+York,NY&zoom=12             &maptype=roadmap&markers=${ubicaciones}&key=AIzaSyDAqo8LahB9tPG57aPOO9ylY-uX_dfYNBw`;
     console.log('url: ' + url);
     document.getElementById('map').setAttribute('src', url);
 }
