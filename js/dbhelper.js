@@ -37,7 +37,7 @@ class DBHelper {
         //1ro: Verifico que no estén guardados en la bd
         cargarRestaurantes().then(function (restaurantesGuardados) {
             if (restaurantesGuardados.length > 0) {
-                console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
+                // console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
                 callback(null, restaurantesGuardados);
             } else {
                 let respuesta = fetch(DBHelper.DATABASE_URL)
@@ -45,7 +45,7 @@ class DBHelper {
                         return response.json();
                     })
                     .then(function (respuestaJson) {
-                        console.log(respuestaJson);
+                        // console.log(respuestaJson);
                         respuestaJson.forEach(element => {
                             console.log('Creando restaurante en la bd...' + element.id);
                             crearRestaurante(element);
@@ -63,7 +63,7 @@ class DBHelper {
         //1ro: Verifico que no estén guardados en la bd
         cargarReviews().then(function (reviewsGuardados) {
             if (reviewsGuardados.length > 0) {
-                console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
+                // console.log('Ya están registrados, por lo tanto no necesito consultarlos en la bd');
                 callback(null, reviewsGuardados);
             } else {
                 let respuesta = fetch(DBHelper.RESTAURANT_REVIEW_URL)
@@ -74,6 +74,7 @@ class DBHelper {
                         console.log(respuestaJson);
                         respuestaJson.forEach(element => {
                             console.log('Creando review en la bd...' + element.id);
+                            element.pending = 'false';
                             crearReview(element);
                         });
                         callback(null, respuestaJson);
@@ -239,7 +240,7 @@ class DBHelper {
         }).then(function (sincronizado) {
             review.createdAt = review.id;
             if (!sincronizado) {
-                review.pending = true;
+                review.pending = 'true';
             }
             crearReview(review);
             callback(null, review);
@@ -249,6 +250,36 @@ class DBHelper {
             console.log(error);
             callback(error, null);
         })
+    }
+
+    static sincroPendingReviews() {
+        // Fetch all restaurants
+        let pendientes = cargarReviewsPendientes().then(
+            function(pendientes){
+                pendientes.forEach(review => {
+                    
+                    fetch(DBHelper.RESTAURANT_REVIEW_URL, {
+                        method: 'post',
+                        body: {
+                            "restaurant_id": review.restaurant_id,
+                            "name": review.name,
+                            "rating": review.rating,
+                            "comments": review.comments
+                        }
+                        //body: JSON.stringify(review)
+                    }).then(function (response) {
+                        if (response.statusText== "Created") { //Creado
+                            //update local review
+                            review.pending='false';
+                            updatePendingReview(review);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                });
+            }
+        )
     }
 
     static changeFavoriteStatus(restaurant, callback) {
