@@ -208,7 +208,7 @@ createReviewHTML = (review) => {
     comments.innerHTML = review.comments;
     li.appendChild(comments);
 
-    if (review.pending !== undefined) {
+    if (review.pending === 'true') {
         const small = document.createElement('small');
         small.innerText = "Pending to synchronize";
         li.appendChild(small);

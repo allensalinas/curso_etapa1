@@ -8,13 +8,20 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+    fetchReviews();
     fetchNeighborhoods();
     fetchCuisines();
-    fetchReviews();
-    updateRestaurants();
-    // document.querySelectorAll(".")
-    // fillRestaurantsHTML();
+    // addEvent(window, 'online', online);
+    // addEvent(window, 'offline', online);
+    // updateRestaurants();
 });
+
+function online(event){
+    console.log('Cambio de estado: ' + event.type);
+    if (event.type == 'online') {
+        DBHelper.sincroPendingReviews();
+    }
+}
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -36,6 +43,8 @@ fetchReviews = () => {
             console.error('Error en main.js fetchReviews: ' + error);
         } else {
             self.reviews = reviews;
+            window.addEventListener('online', online);
+            window.addEventListener('offline', online);
         }
     });
 }
@@ -84,7 +93,8 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-initMap =()=>{
+window.initMap =()=>{
+    console.log('init map');
     let loc = {
         lat: 40.722216,
         lng: -73.987501
@@ -94,8 +104,9 @@ initMap =()=>{
         center: loc,
         scrollwheel: false
     });
+    updateRestaurants();
     // fillRestaurantsHTML();
-    addMarkersToMap();
+    // addMarkersToMap();
 }
 // function initMap(){
 //     let loc = {
@@ -157,6 +168,7 @@ fillRestaurantsHTML = (restaurants) => {
     restaurants.forEach(restaurant => {
         ul.append(createRestaurantHTML(restaurant));
     });
+    addMarkersToMap();
 }
 
 /**

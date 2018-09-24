@@ -1,11 +1,13 @@
 // import idb from 'idb'
 
-var dbPromise = idb.open('allenbd-entrega3', 1, function(upgradeDb) {
+var dbPromise = idb.open('allenbd-entrega3-sinc1', 2, function(upgradeDb) {
     switch (upgradeDb.oldVersion) {
         case 0:
             var store = upgradeDb.createObjectStore('restaurants');
             var reviews = upgradeDb.createObjectStore('reviews');
-            break;
+        case 1:
+            var reviewStore = upgradeDb.transaction.objectStore('reviews');
+            reviewStore.createIndex('pending', 'pending');
         default:
             break;
     }
@@ -52,4 +54,35 @@ function cargarReviews() {
         // console.log('Esto es lo que encontré: ' + restaurants);
         return reviews;
     });
+}
+
+function cargarReviewsPendientes(){
+    return dbPromise.then(function(db) {
+        var tx = db.transaction('reviews');
+        var store = tx.objectStore('reviews');
+        var pendingIndex = store.index('pending');
+      
+        return pendingIndex.getAll('true');
+      }).then(function(reviews) {
+        console.log('Reviews pendientes:', reviews);
+        return reviews;
+      });
+}
+
+function updatePendingReview(review){
+    console.log('tratando de actualizar el review: ' + review.id);
+    dbPromise.then(function(db) {
+        var tx = db.transaction('reviews', 'readwrite');
+        var store = tx.objectStore('reviews');
+        // var item = {
+        //   name: 'sandwich',
+        //   price: 99.99,
+        //   description: 'A very tasty, but quite expensive, sandwich',
+        //   created: new Date().getTime()
+        // };
+        store.put(review, review.id);
+        return tx.complete;
+      }).then(function() {
+        console.log('item updated!');
+      });      
 }
