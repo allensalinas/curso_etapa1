@@ -5,6 +5,8 @@
 ## Project Overview
 
 This is the result of the Mobile Specialist Certification Course. Here I've applied too many things I've learned, such as:
+- Image optimization
+- Accesibility concerns
 - Service Worker api
 - IDB api
 - Cache api
@@ -19,7 +21,7 @@ This is the result of the Mobile Specialist Certification Course. Here I've appl
 
 The app is about a list of restaurants, which you can review and mark as favorite.
 
-Feel free to use and contact me if you have any question.
+Feel free to use as you want and contact me if you have any question.
 
 @AllenSalinas9
 
