@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
+const minify = require('gulp-minify');
 
 gulp.task('default', function() {
   // place code for your default task here
@@ -18,4 +19,10 @@ gulp.task('styles', function () {
     console.log(`${details.name}: ${details.stats.minifiedSize}`);
   }))
   .pipe(gulp.dest('./css/'));
+});
+
+gulp.task('compress', function() {
+  gulp.src(['lib/*.js', 'lib/*.mjs'])
+    .pipe(minify())
+    .pipe(gulp.dest('js'))
 });
