@@ -11,7 +11,7 @@ gulp.task('default', function() {
 });
 
 gulp.task('styles', function () {
-  return gulp.src(['./css/styles.css', './css/detail.css', './normalize.css'])
+  return gulp.src(['./css/styles.css', './css/detail.css', './css/snackbar.css', './normalize.css'])
   .pipe(concat('all.min.css'))
   // .pipe(cleanCSS({compatibility: 'ie8'}))
   .pipe(cleanCSS({compatibility: 'ie8', debug: true}, (details) => {
